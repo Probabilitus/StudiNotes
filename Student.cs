@@ -15,7 +15,6 @@
         {
             FirstName = firstName;
         }
-
         public Student(int id, string firstName, string lastName) : this(id, firstName)
         {
             LastName = lastName;

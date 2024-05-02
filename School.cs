@@ -1,7 +1,12 @@
-﻿namespace StudiNotes
+﻿
+using System;
+
+namespace StudiNotes
 {
     public class School
     {
+        private string lastName;
+
         public List<Student> Students { get; set; }
         public List<Course> Courses { get; set; }
         public School()
@@ -9,10 +14,10 @@
             Students = new List<Student>();
             Courses = new List<Course>();
         }
-        public void AddStudent(string firstName)
+        public void AddStudent(string firstName, string lastName, DateTime birthDate)
         {
             int id = Students.Count + 1;
-            Student student = new Student(id, firstName);
+            Student student = new Student(id, firstName, lastName, birthDate );
             Students.Add(student);
         }
         public void RemoveStudent(string firstName)
@@ -27,6 +32,10 @@
         {
             return Students;
         }
+        public Student GetStudent(string firstName)
+        {
+            return Students.FirstOrDefault(s => s.FirstName == firstName);
+        }
         public void HandleStudents()
         {
             while (true)
@@ -35,7 +44,8 @@
                 Console.WriteLine("1. Ajouter un élève");
                 Console.WriteLine("2. Supprimer un élève");
                 Console.WriteLine("3. Afficher tous les élèves");
-                Console.WriteLine("4. Retour");
+                Console.WriteLine("4. Consulter un élève existant");
+                Console.WriteLine("5. Retour");
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -43,9 +53,12 @@
                     case "1":
                         Console.WriteLine("Entrez le prénom de l'élève :");
                         string firstName = Console.ReadLine();
-
-                        AddStudent(firstName);
-                        Console.WriteLine($"L'élève {firstName} a été ajouté.");
+                        Console.WriteLine("Entrez le nom de l'élève :");
+                        string lastName = Console.ReadLine();
+                        Console.WriteLine("Entrez la date de naissance au format (AAAA-MM-DD) :");
+                        DateTime BirthDate = DateTime.Parse(Console.ReadLine());
+                        AddStudent(firstName, lastName, BirthDate);
+                        Console.WriteLine($"L'élève {firstName} {lastName} a été ajouté.");
                         break;
                     case "2":
                         Console.WriteLine("Entrez le prénom de l'élève à supprimer :");
@@ -55,12 +68,25 @@
                         break;
                     case "3":
                         Console.WriteLine("Voici tous les élèves :");
-                        foreach (var student in GetStudents())
+                        foreach (var newstudent in GetStudents())
                         {
-                            Console.WriteLine($"{student.FirstName} {student.LastName}");
+                            Console.WriteLine($"{newstudent.FirstName} {newstudent.LastName}");
                         }
                         break;
                     case "4":
+                        Console.WriteLine("Entrez le prénom de l'élève à consulter :");
+                        firstName = Console.ReadLine();
+                        var student = GetStudent(firstName);
+                        if (student != null)
+                        {
+                            Console.WriteLine($"Prénom: {student.FirstName}\nNom: {student.LastName}\nDate de naissance : {student.BirthDate}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"L'élève {firstName} n'existe pas.");
+                        }
+                        break;
+                    case "5":
                         return;
                     default:
                         Console.WriteLine("Choix non valide. Veuillez réessayer.");
@@ -68,7 +94,8 @@
                 }
             }
         }
-        public void AddCourse(string name)
+    
+    public void AddCourse(string name)
         {
             var course = Courses.FirstOrDefault(c => c.Name == name);
 
