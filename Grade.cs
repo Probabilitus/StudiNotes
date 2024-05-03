@@ -1,11 +1,19 @@
-﻿public class Grade
+﻿using StudiNotes;
+using System.Diagnostics;
+
+public class Grade
 {
-    public double Value { get; set; }
-    public string Comment { get; set; }
-    public Grade(double value, string comment)
-    {
-        Value = value;
-        Comment = comment;
-    }
+    Student Student { get; set; }
+    string Course { get; set; }
+    double GradeValue { get; set; }
+    string  Appreciation { get; set; }
+
+     public Grade(Student student, string course, double grade, string appreciation)
+     {
+        Student = student;
+        Course = course;
+        GradeValue = grade;
+        Appreciation = appreciation;
+     }
 }
 

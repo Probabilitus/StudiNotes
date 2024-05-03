@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace StudiNotes
 {
@@ -9,10 +11,13 @@ namespace StudiNotes
 
         public List<Student> Students { get; set; }
         public List<Course> Courses { get; set; }
+        public List<Grade> Grades { get; set; }
+
         public School()
         {
             Students = new List<Student>();
             Courses = new List<Course>();
+            Grades = new List<Grade>();
         }
         public void AddStudent(string firstName, string lastName, DateTime birthDate)
         {
@@ -36,7 +41,14 @@ namespace StudiNotes
         {
             return Students.FirstOrDefault(s => s.FirstName == firstName);
         }
-        public void HandleStudents()
+        public void AddGrade(Student student, string course, double grade, string appreciation)
+        {
+            
+            Grade newGrade = new Grade(student, course, grade, appreciation );
+            Grades.Add(newGrade);
+            Console.WriteLine($"{student.FirstName} a obtenu la note de {grade} au cours de {course} : {appreciation}");
+        }
+            public void HandleStudents()
         {
             while (true)
             {
@@ -45,7 +57,8 @@ namespace StudiNotes
                 Console.WriteLine("2. Supprimer un élève");
                 Console.WriteLine("3. Afficher tous les élèves");
                 Console.WriteLine("4. Consulter un élève existant");
-                Console.WriteLine("5. Retour");
+                Console.WriteLine("5. Ajouter une note et appréciation");
+                Console.WriteLine("6. Retour");
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -87,6 +100,32 @@ namespace StudiNotes
                         }
                         break;
                     case "5":
+                        Console.WriteLine("Entrez le prénom de l'élève à qui vous voulez ajouter une note :");
+                        firstName = Console.ReadLine();
+                        var studentToGrade = GetStudent(firstName);
+                        if (studentToGrade != null)
+                        {
+                            Console.WriteLine("Entrez le cours pour lequel la note doit être ajoutée :");
+                            string course = Console.ReadLine();
+                            Console.WriteLine("Entrez la note de l'élève :");
+                            double grade = double.Parse(Console.ReadLine());
+                            Console.WriteLine("Voulez-vous ajouter une appréciation ? (y/n)");
+                            string addAppreciation = Console.ReadLine();
+                            string appreciation = "";
+                            if (addAppreciation.ToLower() == "y")
+                            {
+                                Console.WriteLine("Entrez l'appréciation :");
+                                appreciation = Console.ReadLine();
+                            }
+                            AddGrade(studentToGrade, course, grade, appreciation);
+                            Console.WriteLine($"La note a été ajoutée à l'élève {firstName} pour le cours {course}.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"L'élève {firstName} n'existe pas.");
+                        }
+                        break;
+                    case "6":
                         return;
                     default:
                         Console.WriteLine("Choix non valide. Veuillez réessayer.");
